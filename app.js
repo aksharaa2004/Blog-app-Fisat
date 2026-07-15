@@ -4,6 +4,7 @@ const Cors = require("cors");
 const jwt = require("jsonwebtoken");
 const Bcrypt = require("bcrypt");
 const UserModel = require("./models/users.js");
+const PostModel = require("./models/post.js");
 
 let app = Express();
 
@@ -53,6 +54,31 @@ app.post("/signin", async (req, res) => {
 ).catch()
 
 });
+
+//create api
+
+app.post("/create", async (req, res) => {
+
+    let input = req.body;
+
+    let token = req.headers.token
+
+    jwt.verify(token, "blogapp", async (error, decoded) => {
+
+        if (decoded && decoded.email){
+
+            let result = new PostModel(input)
+            await result.save()
+            res.json({"status":"success"})
+
+        }else{
+            res.json({"status":"invalid authentication"})
+        }
+
+})
+
+})
+
 
 //sign out
 app.post("/signup", async (req, res) => {
