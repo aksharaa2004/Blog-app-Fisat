@@ -14,6 +14,42 @@ app.use(Cors());
 Mongoose.connect("mongodb://akshara:Akak4812@ac-kaukwea-shard-00-00.dz9thle.mongodb.net:27017,ac-kaukwea-shard-00-01.dz9thle.mongodb.net:27017,ac-kaukwea-shard-00-02.dz9thle.mongodb.net:27017/blogappdb?ssl=true&replicaSet=atlas-9gt2a1-shard-0&authSource=admin&appName=Cluster0");
 
 
+
+//view all posts
+app.post("/viewall", async (req, res) => {
+
+    let token = req.headers.token;
+
+    jwt.verify(token, "blogapp", async (error, decoded) => {
+
+        if (decoded && decoded.email) {
+
+            PostModel.find()
+                .then((items) => {
+                    res.json(items);
+                })
+                .catch((error) => {
+                    res.json({
+                        status: "error",
+                        error: error.message
+                    });
+                });
+
+        } else {
+
+            res.json({
+                status: "invalid authentication"
+            });
+
+        }
+
+    });
+
+});
+
+
+
+
 //sign in
 
 app.post("/signin", async (req, res) => {
